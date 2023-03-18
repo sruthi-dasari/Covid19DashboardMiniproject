@@ -1,0 +1,12 @@
+.about-container {
+  background-color: #1f1f36;
+  height: 100vh;
+  padding: 15px;
+}
+
+.about-text {
+  color: #ffffff;
+  font-family: 'Roboto';
+  font-size: 16px;
+  font-weight: 500;
+}

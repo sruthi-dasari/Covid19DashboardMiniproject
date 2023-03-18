@@ -1,0 +1,41 @@
+.notfound-container {
+  background-color: #161625;
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.notfound-img {
+  height: 150px;
+  width: 220px;
+}
+.notfound-heading {
+  color: #ffffff;
+  font-size: 15px;
+  font-family: 'Roboto';
+  font-weight: 500;
+  margin-top: 20px;
+}
+.notfound-para {
+  color: #a9afba;
+  font-size: 11px;
+  font-family: 'Roboto';
+  text-align: center;
+}
+.home-btn {
+  background-color: #356dcc;
+  color: #ffffff;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'Roboto';
+  padding: 10px;
+  height: 30px;
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

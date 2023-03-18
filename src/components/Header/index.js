@@ -1,7 +1,5 @@
 import './index.css'
 
-import Popup from 'reactjs-popup'
-
 import {RiMenuFoldFill} from 'react-icons/ri'
 import {IoMdCloseCircle} from 'react-icons/io'
 

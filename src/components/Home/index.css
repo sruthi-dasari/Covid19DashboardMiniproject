@@ -1,6 +1,6 @@
 .home-container {
   background-color: #161625;
-  /* height: 70vh; */
+  /* height: 100vh; */
   padding: 15px;
   display: flex;
   flex-direction: column;
@@ -32,12 +32,35 @@
   border: none;
   color: #a9afba;
   font-size: 10px;
+  outline: none;
+}
+
+@media screen and (min-width: 768px) {
+  .search-box-container {
+    margin-top: 20px;
+    padding: 20px;
+
+    height: 50px;
+    width: 600px;
+  }
+
+  .search-icon {
+    height: 15px;
+    width: 15px;
+  }
+
+  .search-input-container {
+    font-size: 14px;
+    width: 100%;
+    height: 30px;
+  }
 }
 
 .select-container {
   display: flex;
   flex-wrap: wrap;
-  /* padding: 10px; */
+  justify-content: center;
+  padding-left: 0px;
   /* justify-content: space-between; */
 }
 
@@ -68,37 +91,50 @@
 
 .cases-text {
   font-family: 'Roboto';
-  font-size: 10px;
+  font-size: 12px;
 }
 .cases-icon {
-  height: 20px;
-  width: 20px;
+  height: 24px;
+  width: 24px;
 }
 .cases-count {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .covid-cases-container {
   display: flex;
   flex-direction: column;
   background-color: #1e1e30;
-  padding: 10px;
+  padding-left: 0px;
   border-radius: 5px;
   border: 1px solid #a9afba;
+  list-style: none;
 }
 
 .heading-row {
   display: flex;
+  border-bottom: 1px solid #a9afba;
+  padding: 10px;
+}
+
+.states-heading-outer-container {
+  display: flex;
+  width: 150px;
+}
+
+.heading-container {
+  width: 100px;
+  color: #ffffff;
+  font-family: 'Roboto';
+  font-size: 11px;
+  margin: 3px;
+  text-align: center;
 }
 
 .states-heading-container {
-  display: flex;
-}
-
-.heading-text {
   color: #ffffff;
   font-family: 'Roboto';
-  font-size: 8px;
+  font-size: 11px;
   margin: 3px;
 }
 
@@ -112,9 +148,49 @@
 }
 
 .asc-des-icon {
-  height: 10px;
-  width: 10px;
+  height: 12px;
+  width: 12px;
 }
 
 .content-row {
+  display: flex;
+  padding: 10px;
+}
+
+.name-content-container {
+  width: 150px;
+  color: #e1e4e9;
+  font-family: 'Roboto';
+  font-size: 9px;
+  margin: 3px;
+  text-align: left;
+}
+
+.content-container {
+  width: 100px;
+
+  font-family: 'Roboto';
+  font-size: 9px;
+  margin: 3px;
+  text-align: center;
+}
+
+.confirmed-text {
+  color: #e40938;
+}
+
+.active-text {
+  color: #0467d4;
+}
+
+.recovered-text {
+  color: #237d3b;
+}
+
+.deceased-text {
+  color: #535a64;
+}
+
+.population-text {
+  color: #768195;
 }

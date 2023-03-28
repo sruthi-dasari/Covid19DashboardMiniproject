@@ -3,7 +3,7 @@ import './index.css'
 import {RiMenuFoldFill} from 'react-icons/ri'
 import {IoMdCloseCircle} from 'react-icons/io'
 
-import {Link} from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 
 import {Component} from 'react'
 
@@ -22,9 +22,15 @@ class Header extends Component {
 
   render() {
     const {showMenu} = this.state
+
+    const {location} = this.props
+
+    const activeHome = location.pathname === '/' ? 'active-home' : ''
+    const activeAbout = location.pathname === '/about' ? 'active-about' : ''
+
     return (
-      <div className="header-container">
-        <div className="top-header-container">
+      <ul className="header-container">
+        <li className="top-header-container">
           <Link to="/" className="link-item">
             <h1 className="logo-heading">
               COVID19<span className="india-text">INDIA</span>
@@ -38,9 +44,21 @@ class Header extends Component {
           >
             <RiMenuFoldFill className="menu-icon" />
           </button>
-        </div>
+          <div className="home-about-container">
+            <Link to="/" className="link-item">
+              <button type="button" className={`home-about-btn ${activeHome}`}>
+                Home
+              </button>
+            </Link>
+            <Link to="/about" className="link-item">
+              <button type="button" className={`home-about-btn ${activeAbout}`}>
+                About
+              </button>
+            </Link>
+          </div>
+        </li>
         {showMenu && (
-          <div className="bottom-header-container">
+          <li className="bottom-header-container">
             <div>
               <Link to="/" className="home-and-about-link">
                 Home
@@ -56,11 +74,11 @@ class Header extends Component {
             >
               <IoMdCloseCircle className="close-icon" />
             </button>
-          </div>
+          </li>
         )}
-      </div>
+      </ul>
     )
   }
 }
 
-export default Header
+export default withRouter(Header)

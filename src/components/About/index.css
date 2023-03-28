@@ -1,12 +1,60 @@
 .about-container {
   background-color: #161625;
-  height: 100vh;
+  /* height: 100vh; */
   padding: 15px;
 }
 
 .about-text {
   color: #ffffff;
   font-family: 'Roboto';
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
+}
+
+.about-update-text {
+  color: #a9afba;
+  font-family: 'Roboto';
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.about-subtitle {
+  color: #ffffff;
+  font-family: 'Roboto';
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.faqs-container {
+  list-style: none;
+  padding-left: 0px;
+}
+
+.faq-item-container {
+}
+
+.question-text {
+  color: #a9afba;
+  font-family: 'Roboto';
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.answer-text {
+  color: #356dcc;
+  font-family: 'Roboto';
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.loading-view-container {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (min-width: 768px) {
+  .about-container {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
 }

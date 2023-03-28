@@ -10,6 +10,8 @@ import Loader from 'react-loader-spinner'
 import Header from '../Header'
 import Footer from '../Footer'
 
+import SuggestionItem from '../SuggestionItem'
+
 const statesList = [
   {
     state_code: 'AN',
@@ -159,7 +161,6 @@ const statesList = [
 
 const apiStatusConstants = {
   success: 'SUCCESS',
-  failure: 'FAILURE',
   loading: 'IN_PROGRESS',
   initial: 'INITIAL',
 }
@@ -168,38 +169,15 @@ class Home extends Component {
   state = {
     apiStatus: apiStatusConstants.initial,
     covidData: [],
-    data: '',
+    data: [],
+    searchInput: '',
   }
 
   componentDidMount() {
     this.getCovidData()
   }
 
-  getCovidData = async () => {
-    this.setState({apiStatus: apiStatusConstants.loading})
-    const url = 'https://apis.ccbp.in/covid19-state-wise-data'
-    const options = {
-      method: 'GET',
-    }
-    const response = await fetch(url, options)
-    // console.log(response)
-    const data = await response.json()
-    // console.log(data)
-
-    if (response.ok) {
-      //   const {covidData} = this.state
-      this.setState({data})
-
-      const resultList = this.convertObjectsDataIntoListItemsUsingForInMethod()
-      this.setState({covidData: resultList})
-
-      this.setState({apiStatus: apiStatusConstants.success})
-    } else {
-      this.setState({apiStatus: apiStatusConstants.failure})
-    }
-  }
-
-  convertObjectsDataIntoListItemsUsingForInMethod() {
+  convertObjectsDataIntoListItemsUsingForInMethod = () => {
     const {data} = this.state
     const resultList = []
     // getting keys of an object object
@@ -217,10 +195,24 @@ class Home extends Component {
         const population = data[keyName].meta.population
           ? data[keyName].meta.population
           : 0
+
+        // resultList.push({
+        //   stateCode: keyName,
+        //   name: statesList.find(state => state.state_code === keyName)
+        //     .state_name,
+        //   confirmed,
+        //   deceased,
+        //   recovered,
+        //   tested,
+        //   population,
+        //   active: confirmed - (deceased + recovered),
+        // })
+
         resultList.push({
           stateCode: keyName,
           name: statesList.find(state => state.state_code === keyName)
-            .state_name,
+            ? statesList.find(state => state.state_code === keyName).state_name
+            : 0,
           confirmed,
           deceased,
           recovered,
@@ -235,76 +227,97 @@ class Home extends Component {
     return resultList
   }
 
-  renderSuccessView = () => (
-    <>
-      <div className="select-container">
-        <div className="select-card confirmed-card">
-          <p className="cases-text">Confirmed</p>
-          <img
-            src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/check-mark_1_rwcqbx.png"
-            alt="country wide confirmed cases pic"
-            className="cases-icon"
-          />
-          <h1 className="cases-count">000000</h1>
-        </div>
-        <div className="select-card active-card">
-          <p className="cases-text">Active</p>
-          <img
-            src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/protection_2_a0cb7m.png"
-            alt="country wide confirmed cases pic"
-            className="cases-icon"
-          />
-          <h1 className="cases-count">000000</h1>
-        </div>
-        <div className="select-card recovered-card">
-          <p className="cases-text">Recovered</p>
-          <img
-            src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/recovered_1_jclri6.png"
-            alt="country wide confirmed cases pic"
-            className="cases-icon"
-          />
-          <h1 className="cases-count">000000</h1>
-        </div>
-        <div className="select-card deceased-card">
-          <p className="cases-text">Deceased</p>
-          <img
-            src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/breathing_1_fegdvb.png"
-            alt="country wide confirmed cases pic"
-            className="cases-icon"
-          />
-          <h1 className="cases-count">000000</h1>
-        </div>
-      </div>
-      <div className="covid-cases-container">
-        <div className="heading-row">
-          <div className="states-heading-container">
-            <h1 className="heading-text">States/UT</h1>
-            <div className="asc-dec-btn-container">
-              <button type="button" className="asc-des-btn">
-                <FcGenericSortingAsc className="asc-des-icon" />
-              </button>
-              <button type="button" className="asc-des-btn">
-                <FcGenericSortingDesc className="asc-des-icon" />
-              </button>
+  getCovidData = async () => {
+    this.setState({apiStatus: apiStatusConstants.loading})
+    const url = 'https://apis.ccbp.in/covid19-state-wise-data'
+    const options = {
+      method: 'GET',
+    }
+    const response = await fetch(url, options)
+
+    const data = await response.json()
+
+    if (response.ok) {
+      //   console.log(data)
+
+      this.setState({data})
+
+      const resultList = this.convertObjectsDataIntoListItemsUsingForInMethod()
+      this.setState({covidData: resultList})
+
+      this.setState({apiStatus: apiStatusConstants.success})
+    }
+  }
+
+  renderSuccessView = () => {
+    const {covidData} = this.state
+    // console.log(covidData)
+    return (
+      <>
+        <ul className="select-container">
+          <li className="select-card confirmed-card">
+            <p className="cases-text">Confirmed</p>
+            <img
+              src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/check-mark_1_rwcqbx.png"
+              alt="country wide confirmed cases pic"
+              className="cases-icon"
+            />
+            <h1 className="cases-count">000000</h1>
+          </li>
+          <li className="select-card active-card">
+            <p className="cases-text">Active</p>
+            <img
+              src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/protection_2_a0cb7m.png"
+              alt="country wide confirmed cases pic"
+              className="cases-icon"
+            />
+            <h1 className="cases-count">000000</h1>
+          </li>
+          <li className="select-card recovered-card">
+            <p className="cases-text">Recovered</p>
+            <img
+              src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/recovered_1_jclri6.png"
+              alt="country wide confirmed cases pic"
+              className="cases-icon"
+            />
+            <h1 className="cases-count">000000</h1>
+          </li>
+          <li className="select-card deceased-card">
+            <p className="cases-text">Deceased</p>
+            <img
+              src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/breathing_1_fegdvb.png"
+              alt="country wide confirmed cases pic"
+              className="cases-icon"
+            />
+            <h1 className="cases-count">000000</h1>
+          </li>
+        </ul>
+        <ul className="covid-cases-container">
+          <li className="heading-row">
+            <div className="states-heading-outer-container">
+              <h1 className="states-heading-container">States/UT</h1>
+              <div className="asc-dec-btn-container">
+                <button type="button" className="asc-des-btn">
+                  <FcGenericSortingAsc className="asc-des-icon" />
+                </button>
+                <button type="button" className="asc-des-btn">
+                  <FcGenericSortingDesc className="asc-des-icon" />
+                </button>
+              </div>
             </div>
-          </div>
-          <h1 className="heading-text">Confirmed</h1>
-          <h1 className="heading-text">Active</h1>
-          <h1 className="heading-text">Recovered</h1>
-          <h1 className="heading-text">Deceased</h1>
-          <h1 className="heading-text">Population</h1>
-        </div>
-        <div className="content-row">
-          <p className="state-name">{}</p>
-          <p className="confirmed-count">{}</p>
-          <p className="active-count">{}</p>
-          <p className="recovered-count">{}</p>
-          <p className="deceased-count">{}</p>
-          <p className="population-count">{}</p>
-        </div>
-      </div>
-    </>
-  )
+            <h1 className="heading-container">Confirmed</h1>
+            <h1 className="heading-container">Active</h1>
+            <h1 className="heading-container">Recovered</h1>
+            <h1 className="heading-container">Deceased</h1>
+            <h1 className="heading-container">Population</h1>
+          </li>
+          {covidData.map(eachItem => (
+            <ContentRow rowDetails={eachItem} key={eachItem.stateCode} />
+          ))}
+        </ul>
+      </>
+    )
+  }
 
   renderLoadingView = () => (
     // testid = "homeRouteLoader"
@@ -318,8 +331,6 @@ class Home extends Component {
     switch (apiStatus) {
       case apiStatusConstants.success:
         return this.renderSuccessView()
-      case apiStatusConstants.failure:
-        return this.renderFailureView()
       case apiStatusConstants.loading:
         return this.renderLoadingView()
       default:
@@ -327,7 +338,18 @@ class Home extends Component {
     }
   }
 
+  onChangeSearchInput = event => {
+    this.setState({searchInput: event.target.value})
+  }
+
   render() {
+    const {searchInput, covidData} = this.state
+    const {stateCodesList} = Object.keys(covidData)
+
+    const searchResults = covidData.filter(eachSuggestion =>
+      eachSuggestion.name.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+
     return (
       <>
         <Header />
@@ -338,8 +360,18 @@ class Home extends Component {
               type="search"
               className="search-input-container"
               placeholder="Enter the State"
+              onChange={this.onChangeSearchInput}
             />
           </div>
+          <ul>
+            {/* {searchResults.map(eachSuggestion => (
+              <SuggestionItem
+                key={eachSuggestion.stateCode}
+                suggestionDetails={eachSuggestion}
+                updateSearchInput={this.updateSearchInput}
+              />
+            ))} */}
+          </ul>
           {this.renderViewContainer()}
         </div>
         <Footer />
@@ -349,3 +381,28 @@ class Home extends Component {
 }
 
 export default Home
+
+const ContentRow = props => {
+  const {rowDetails} = props
+  const {
+    active,
+    confirmed,
+    deceased,
+    name,
+    population,
+    recovered,
+    stateCode,
+    tested,
+  } = rowDetails
+
+  return (
+    <li className="content-row">
+      <p className="name-content-container">{name}</p>
+      <p className="content-container confirmed-text">{confirmed}</p>
+      <p className="content-container active-text">{active}</p>
+      <p className="content-container recovered-text">{recovered}</p>
+      <p className="content-container deceased-text">{deceased}</p>
+      <p className="content-container population-text">{population}</p>
+    </li>
+  )
+}

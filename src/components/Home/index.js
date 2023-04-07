@@ -171,6 +171,7 @@ class Home extends Component {
     covidData: [],
     data: [],
     searchInput: '',
+    showSuggestions: false,
   }
 
   componentDidMount() {
@@ -185,6 +186,7 @@ class Home extends Component {
 
     keyNames.forEach(keyName => {
       //   console.log(keyName)
+
       if (data[keyName]) {
         const {total} = data[keyName]
         // if the state's covid data is available we will store it or we will store 0
@@ -196,23 +198,11 @@ class Home extends Component {
           ? data[keyName].meta.population
           : 0
 
-        // resultList.push({
-        //   stateCode: keyName,
-        //   name: statesList.find(state => state.state_code === keyName)
-        //     .state_name,
-        //   confirmed,
-        //   deceased,
-        //   recovered,
-        //   tested,
-        //   population,
-        //   active: confirmed - (deceased + recovered),
-        // })
-
         resultList.push({
           stateCode: keyName,
           name: statesList.find(state => state.state_code === keyName)
             ? statesList.find(state => state.state_code === keyName).state_name
-            : 0,
+            : 'undefined',
           confirmed,
           deceased,
           recovered,
@@ -243,73 +233,144 @@ class Home extends Component {
       this.setState({data})
 
       const resultList = this.convertObjectsDataIntoListItemsUsingForInMethod()
-      this.setState({covidData: resultList})
+      //   console.log(resultList)
+      const updatedResultList = resultList.map(eachItem => {
+        if (eachItem.name === 'undefined') {
+          const newItem = {
+            active: 0,
+            confirmed: 0,
+            deceased: 0,
+            name: 'undefined',
+            population: 0,
+            recovered: 0,
+            stateCode: 'TT',
+            tested: 0,
+          }
+          return newItem
+        }
+        return eachItem
+      })
+      //   console.log(updatedResultList)
+      this.setState({covidData: updatedResultList})
 
       this.setState({apiStatus: apiStatusConstants.success})
     }
   }
 
+  onClickAscButton = () => {
+    const {covidData} = this.state
+    covidData.sort((a, b) => a - b)
+    this.setState({covidData})
+  }
+
+  onClickDescButton = () => {
+    const {covidData} = this.state
+    covidData.sort((a, b) => a - b).reverse()
+    this.setState({covidData})
+  }
+
   renderSuccessView = () => {
     const {covidData} = this.state
     // console.log(covidData)
+    const reducer = (accumulator, currentValue) => accumulator + currentValue
+    const totalConfirmedCasesArr = covidData.map(eachItem => eachItem.confirmed)
+    const totalConfirmedCases = totalConfirmedCasesArr.reduce(reducer, 0)
+    const totalActiveCasesArr = covidData.map(eachItem => eachItem.active)
+    const totalActiveCases = totalActiveCasesArr.reduce(reducer, 0)
+    const totalRecoveredCasesArr = covidData.map(eachItem => eachItem.recovered)
+    const totalRecoveredCases = totalRecoveredCasesArr.reduce(reducer, 0)
+    const totalDeceasedCasesArr = covidData.map(eachItem => eachItem.deceased)
+    const totalDeceasedCases = totalDeceasedCasesArr.reduce(reducer, 0)
     return (
       <>
-        <ul className="select-container">
-          <li className="select-card confirmed-card">
+        <ul className="countrywide-cases-container">
+          {/* { testid = "countryWideConfirmedCases" } */}
+          <li
+            className="select-card confirmed-card"
+            // testid="countryWideConfirmedCases"
+          >
             <p className="cases-text">Confirmed</p>
             <img
               src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/check-mark_1_rwcqbx.png"
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <h1 className="cases-count">000000</h1>
+            <h1 className="cases-count">{totalConfirmedCases}</h1>
           </li>
-          <li className="select-card active-card">
+          <li
+            className="select-card active-card"
+            // testid="countryWideActiveCases"
+          >
+            {/* { testid = "countryWideActiveCases" } */}
             <p className="cases-text">Active</p>
             <img
               src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/protection_2_a0cb7m.png"
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <h1 className="cases-count">000000</h1>
+            <h1 className="cases-count">{totalActiveCases}</h1>
           </li>
-          <li className="select-card recovered-card">
+          <li
+            className="select-card recovered-card"
+            // testid="countryWideRecoveredCases"
+          >
+            {/* { testid = "countryWideRecoveredCases" } */}
             <p className="cases-text">Recovered</p>
             <img
               src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/recovered_1_jclri6.png"
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <h1 className="cases-count">000000</h1>
+            <h1 className="cases-count">{totalRecoveredCases}</h1>
           </li>
-          <li className="select-card deceased-card">
+          <li
+            className="select-card deceased-card"
+            // testid="countryWideDeceasedCases"
+          >
+            {/* { testid = "countryWideDeceasedCases" } */}
             <p className="cases-text">Deceased</p>
             <img
               src="https://res.cloudinary.com/my-cloud123/image/upload/v1679129023/Covid%20Dashboard/small%20devices/breathing_1_fegdvb.png"
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <h1 className="cases-count">000000</h1>
+            <h1 className="cases-count">{totalDeceasedCases}</h1>
           </li>
         </ul>
-        <ul className="covid-cases-container">
+        {/* { testid = "stateWiseCovidDataTable" } */}
+        <ul
+          className="statewise-covid-data-table"
+          //  testid="stateWiseCovidDataTable"
+        >
           <li className="heading-row">
             <div className="states-heading-outer-container">
               <h1 className="states-heading-container">States/UT</h1>
               <div className="asc-dec-btn-container">
-                <button type="button" className="asc-des-btn">
+                {/* {testid = 'ascendingSort'} */}
+                <button
+                  type="button"
+                  className="asc-des-btn"
+                  //   testid="ascendingSort"
+                  onClick={this.onClickAscButton}
+                >
                   <FcGenericSortingAsc className="asc-des-icon" />
                 </button>
-                <button type="button" className="asc-des-btn">
+                {/* {testid = 'descendingSort'} */}
+                <button
+                  type="button"
+                  className="asc-des-btn"
+                  //   testid="descendingSort"
+                  onClick={this.onClickDescButton}
+                >
                   <FcGenericSortingDesc className="asc-des-icon" />
                 </button>
               </div>
             </div>
-            <h1 className="heading-container">Confirmed</h1>
-            <h1 className="heading-container">Active</h1>
-            <h1 className="heading-container">Recovered</h1>
-            <h1 className="heading-container">Deceased</h1>
-            <h1 className="heading-container">Population</h1>
+            <p className="heading-container">Confirmed</p>
+            <p className="heading-container">Active</p>
+            <p className="heading-container">Recovered</p>
+            <p className="heading-container">Deceased</p>
+            <p className="heading-container">Population</p>
           </li>
           {covidData.map(eachItem => (
             <ContentRow rowDetails={eachItem} key={eachItem.stateCode} />
@@ -321,7 +382,10 @@ class Home extends Component {
 
   renderLoadingView = () => (
     // testid = "homeRouteLoader"
-    <div className="loading-container">
+    <div
+      className="loading-container"
+      // testid="homeRouteLoader"
+    >
       <Loader type="TailSpin" color="#0467d4" height={70} width={70} />
     </div>
   )
@@ -342,13 +406,33 @@ class Home extends Component {
     this.setState({searchInput: event.target.value})
   }
 
+  onClickSearchBar = () => {
+    this.setState({showSuggestions: true})
+  }
+
+  onKeyUpSearchBar = () => {
+    const {searchInput} = this.state
+    if (searchInput === '') {
+      this.setState({showSuggestions: false})
+    }
+  }
+
+  onMouseLeaveSearchBar = () => {
+    const {searchInput} = this.state
+    if (searchInput === '') {
+      this.setState({showSuggestions: false})
+    }
+  }
+
   render() {
-    const {searchInput, covidData} = this.state
-    const {stateCodesList} = Object.keys(covidData)
+    const {searchInput, covidData, showSuggestions} = this.state
+    // console.log(`searchInput: ${searchInput}`)
 
     const searchResults = covidData.filter(eachSuggestion =>
       eachSuggestion.name.toLowerCase().includes(searchInput.toLowerCase()),
     )
+
+    // console.log(searchResults)
 
     return (
       <>
@@ -361,17 +445,28 @@ class Home extends Component {
               className="search-input-container"
               placeholder="Enter the State"
               onChange={this.onChangeSearchInput}
+              onClick={this.onClickSearchBar}
+              onKeyUp={this.onKeyUpSearchBar}
+              //   onMouseLeave={this.onMouseLeaveSearchBar}
             />
           </div>
-          <ul>
-            {/* {searchResults.map(eachSuggestion => (
-              <SuggestionItem
-                key={eachSuggestion.stateCode}
-                suggestionDetails={eachSuggestion}
-                updateSearchInput={this.updateSearchInput}
-              />
-            ))} */}
-          </ul>
+          {showSuggestions ? (
+            // testid = "searchResultsUnorderedList"
+            <ul
+              className="search-results-unordered-list"
+              //   testid="searchResultsUnorderedList"
+            >
+              {searchResults.map(eachSuggestion => (
+                <SuggestionItem
+                  key={eachSuggestion.stateCode}
+                  suggestionDetails={eachSuggestion}
+                  updateSearchInput={this.updateSearchInput}
+                  covidData={covidData}
+                />
+              ))}
+            </ul>
+          ) : null}
+
           {this.renderViewContainer()}
         </div>
         <Footer />

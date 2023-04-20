@@ -8,15 +8,13 @@ import NotFound from './components/NotFound'
 import StateDetails from './components/StateDetails'
 
 const App = () => (
-  <BrowserRouter>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route exact path="/about" component={About} />
-      <Route exact path="state/:stateCode/" component={StateDetails} />
-      <Route path="/not-found" component={NotFound} />
-      <Redirect to="/not-found" />
-    </Switch>
-  </BrowserRouter>
+  <Switch>
+    <Route exact path="/" component={Home} />
+    <Route exact path="/about" component={About} />
+    <Route exact path="/state/:stateCode/" component={StateDetails} />
+    <Route path="/not-found" component={NotFound} />
+    <Redirect to="/not-found" />
+  </Switch>
 )
 
 export default App

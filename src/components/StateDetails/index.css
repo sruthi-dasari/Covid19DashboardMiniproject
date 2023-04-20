@@ -1,0 +1,66 @@
+.state-success-view-container {
+  background-color: #161625;
+  padding: 15px;
+}
+
+.state-name-and-tested-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.state-name-container {
+  background-color: #12273f;
+  border-radius: 25px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.state-name-text {
+  margin: 0px;
+  color: #0f85bd;
+  font-family: 'Roboto';
+}
+
+.last-update-text {
+  color: #a9afba;
+  font-family: 'Roboto';
+  font-size: 12px;
+}
+
+.tested-text {
+  margin: 0px;
+  color: #a9afba;
+  font-family: 'Roboto';
+  font-size: 12px;
+}
+
+.tested-count-text {
+  color: #a9afba;
+  font-size: 14px;
+  font-family: 'Roboto';
+  font-weight: 500;
+  /* text-align: left; */
+}
+
+.state-specific-cases-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding-left: 0px;
+}
+
+.top-districts-heading {
+  color: #e40938;
+  font-size: 20px;
+  font-family: 'Roboto';
+}
+
+.daily-spread-heading {
+  margin: 0px;
+  color: #ffffff;
+  font-size: 20px;
+  font-family: 'Roboto';
+  text-align: center;
+}

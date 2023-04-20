@@ -40,6 +40,7 @@
 
 .search-results-unordered-list {
   padding-left: 0px;
+  margin-top: 0px;
 }
 
 @media screen and (min-width: 768px) {
@@ -118,6 +119,12 @@
   list-style: none;
   overflow: auto;
   max-width: 400px;
+}
+
+.statewise-covid-data-unordered-list {
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
 
 @media screen and (min-width: 768px) {

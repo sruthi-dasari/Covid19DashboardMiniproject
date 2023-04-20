@@ -2,43 +2,292 @@ import './index.css'
 
 import {Component} from 'react'
 
+import {Loader} from 'react-loader-spinner'
+
 import Header from '../Header'
 import Footer from '../Footer'
 
+const statesList = [
+  {
+    state_code: 'AN',
+    state_name: 'Andaman and Nicobar Islands',
+  },
+  {
+    state_code: 'AP',
+    state_name: 'Andhra Pradesh',
+  },
+  {
+    state_code: 'AR',
+    state_name: 'Arunachal Pradesh',
+  },
+  {
+    state_code: 'AS',
+    state_name: 'Assam',
+  },
+  {
+    state_code: 'BR',
+    state_name: 'Bihar',
+  },
+  {
+    state_code: 'CH',
+    state_name: 'Chandigarh',
+  },
+  {
+    state_code: 'CT',
+    state_name: 'Chhattisgarh',
+  },
+  {
+    state_code: 'DN',
+    state_name: 'Dadra and Nagar Haveli and Daman and Diu',
+  },
+  {
+    state_code: 'DL',
+    state_name: 'Delhi',
+  },
+  {
+    state_code: 'GA',
+    state_name: 'Goa',
+  },
+  {
+    state_code: 'GJ',
+    state_name: 'Gujarat',
+  },
+  {
+    state_code: 'HR',
+    state_name: 'Haryana',
+  },
+  {
+    state_code: 'HP',
+    state_name: 'Himachal Pradesh',
+  },
+  {
+    state_code: 'JK',
+    state_name: 'Jammu and Kashmir',
+  },
+  {
+    state_code: 'JH',
+    state_name: 'Jharkhand',
+  },
+  {
+    state_code: 'KA',
+    state_name: 'Karnataka',
+  },
+  {
+    state_code: 'KL',
+    state_name: 'Kerala',
+  },
+  {
+    state_code: 'LA',
+    state_name: 'Ladakh',
+  },
+  {
+    state_code: 'LD',
+    state_name: 'Lakshadweep',
+  },
+  {
+    state_code: 'MH',
+    state_name: 'Maharashtra',
+  },
+  {
+    state_code: 'MP',
+    state_name: 'Madhya Pradesh',
+  },
+  {
+    state_code: 'MN',
+    state_name: 'Manipur',
+  },
+  {
+    state_code: 'ML',
+    state_name: 'Meghalaya',
+  },
+  {
+    state_code: 'MZ',
+    state_name: 'Mizoram',
+  },
+  {
+    state_code: 'NL',
+    state_name: 'Nagaland',
+  },
+  {
+    state_code: 'OR',
+    state_name: 'Odisha',
+  },
+  {
+    state_code: 'PY',
+    state_name: 'Puducherry',
+  },
+  {
+    state_code: 'PB',
+    state_name: 'Punjab',
+  },
+  {
+    state_code: 'RJ',
+    state_name: 'Rajasthan',
+  },
+  {
+    state_code: 'SK',
+    state_name: 'Sikkim',
+  },
+  {
+    state_code: 'TN',
+    state_name: 'Tamil Nadu',
+  },
+  {
+    state_code: 'TG',
+    state_name: 'Telangana',
+  },
+  {
+    state_code: 'TR',
+    state_name: 'Tripura',
+  },
+  {
+    state_code: 'UP',
+    state_name: 'Uttar Pradesh',
+  },
+  {
+    state_code: 'UT',
+    state_name: 'Uttarakhand',
+  },
+  {
+    state_code: 'WB',
+    state_name: 'West Bengal',
+  },
+]
+
+const apiStateStatusConstants = {
+  success: 'SUCCESS',
+  loading: 'IN_PROGRESS',
+  initial: 'INITIAL',
+}
+
 class StateDetails extends Component {
   state = {
+    data: [],
     stateData: [],
+    countryWideData: [],
+    apiStateStatus: apiStateStatusConstants.success,
+  }
+
+  componentDidMount() {
+    this.getCountryWideData()
+    this.getStateDetails()
+  }
+
+  convertObjectsDataIntoListItemsUsingForInMethod = () => {
+    const {data} = this.state
+    const resultList = []
+    // getting keys of an object object
+    const keyNames = Object.keys(data)
+
+    keyNames.forEach(keyName => {
+      //   console.log(keyName)
+
+      if (data[keyName]) {
+        const {total} = data[keyName]
+        // if the state's covid data is available we will store it or we will store 0
+        const confirmed = total.confirmed ? total.confirmed : 0
+        const deceased = total.deceased ? total.deceased : 0
+        const recovered = total.recovered ? total.recovered : 0
+        const tested = total.tested ? total.tested : 0
+        // const population = data[keyName].meta.population
+        //   ? data[keyName].meta.population
+        //   : 0
+        const {meta} = data[keyName]
+        const lastUpdated = meta.last_updated ? meta.last_updated : 0
+        const {districts} = data[keyName]
+        // const districtKeyNames = Object.keys(districts)
+        // districtKeyNames.forEach(districtKeyName => {
+        //   if (districts[districtKeyName]) {
+        //     const {meta} = districts[keyName]
+        //   }
+        // })
+
+        resultList.push({
+          stateCode: keyName,
+          name: statesList.find(state => state.state_code === keyName)
+            ? statesList.find(state => state.state_code === keyName).state_name
+            : 'undefined',
+          confirmed,
+          deceased,
+          recovered,
+          tested,
+          //   population,
+          active: confirmed - (deceased + recovered),
+          lastUpdated,
+          //   districts: {
+          //     population: districts.map(eachItem => {
+          //       const {meta} = eachItem
+          //       const {population} = meta
+          //       return population
+          //     }),
+          //   },
+        })
+      }
+    })
+    // console.log(resultList)
+
+    return resultList
+  }
+
+  getCountryWideData = async () => {
+    console.log('In getCountryWideData()')
+
+    const url = 'https://apis.ccbp.in/covid19-state-wise-data'
+    const options = {
+      method: 'GET',
+    }
+    const response = await fetch(url, options)
+    const data = await response.json()
+    // console.log(data)
+    this.setState({data})
+
+    if (response.ok) {
+      const requiredCountryWideData = this.convertObjectsDataIntoListItemsUsingForInMethod()
+      console.log(requiredCountryWideData)
+      this.setState({countryWideData: requiredCountryWideData})
+    }
   }
 
   getStateDetails = () => {
-    const {stateCode, covidData} = this.props
+    console.log('In getStateDetails()')
+    const {match} = this.props
+    const {params} = match
+    const {stateCode} = params
 
-    const stateDetails = covidData.map(
+    const {countryWideData} = this.state
+
+    const stateDetails = countryWideData.find(
       eachItem => eachItem.stateCode === stateCode,
     )
+
     console.log(stateDetails)
+
+    this.setState({
+      stateData: stateDetails,
+      apiStateStatus: apiStateStatusConstants.success,
+    })
   }
 
-  renderStateDetailsView = () => {
-    this.getStateDetails()
-
+  renderStateSuccessView = () => {
+    console.log('In renderStateSuccessView()')
     return (
-      <>
-        <div>
+      <div className="state-success-view-container">
+        <div className="state-name-and-tested-container">
           <div className="state-name-and-last-update-container">
-            <div className="state-name-container">{}</div>
-            <p className="last-update-text">{}</p>
+            <div className="state-name-container">
+              <p className="state-name-text">Andhra Pradesh</p>
+            </div>
+            <p className="last-update-text">Last update on {}</p>
           </div>
           <div className="tested-container">
-            <p>Tested</p>
-            <h1>{}</h1>
+            <p className="tested-text">Tested</p>
+            <p className="tested-count-text">{}</p>
           </div>
         </div>
-        <ul className="select-container">
-          {/* { testid = "stateSpecificConfirmedCasesContainer" } */}
+        <ul className="state-specific-cases-container">
           <li
             className="select-card confirmed-card"
-            // testid="stateSpecificConfirmedCasesContainer"
+            testid="stateSpecificConfirmedCasesContainer"
           >
             <p className="cases-text">Confirmed</p>
             <img
@@ -48,10 +297,10 @@ class StateDetails extends Component {
             />
             <p className="cases-count">000000</p>
           </li>
-          {/* { testid = "stateSpecificActiveCasesContainer" } */}
+
           <li
             className="select-card active-card"
-            // testid="stateSpecificActiveCasesContainer"
+            testid="stateSpecificActiveCasesContainer"
           >
             <p className="cases-text">Active</p>
             <img
@@ -61,10 +310,10 @@ class StateDetails extends Component {
             />
             <p className="cases-count">000000</p>
           </li>
-          {/* { testid = "stateSpecificRecoveredCasesContainer" } */}
+
           <li
             className="select-card recovered-card"
-            // testid="stateSpecificRecoveredCasesContainer"
+            testid="stateSpecificRecoveredCasesContainer"
           >
             <p className="cases-text">Recovered</p>
             <img
@@ -74,10 +323,10 @@ class StateDetails extends Component {
             />
             <p className="cases-count">000000</p>
           </li>
-          {/* { testid = "stateSpecificDeceasedCasesContainer" } */}
+
           <li
             className="select-card deceased-card"
-            // testid="stateSpecificDeceasedCasesContainer"
+            testid="stateSpecificDeceasedCasesContainer"
           >
             <p className="cases-text">Deceased</p>
             <img
@@ -88,29 +337,52 @@ class StateDetails extends Component {
             <p className="cases-count">000000</p>
           </li>
         </ul>
-        {/* { testid = "lineChartsContainer" } */}
-        <div
+
+        <p className="top-districts-heading">Top Districts</p>
+
+        <ul
           className="top-districts-outer-container"
-          //   testid="lineChartsContainer"
+          testid="topDistrictsUnorderedList"
         >
-          <h1 className="top-districts-heading">Top Districts</h1>
-          <div className="top-district-container">
+          <li className="district-container">
             <h1>{}</h1>
             <p>{}</p>
-          </div>
-        </div>
+          </li>
+        </ul>
         <div className="bar-graph-container">{}</div>
-        <h1 className="daily-spread-heading">Daily Spread Trends</h1>
-      </>
+        <p className="daily-spread-heading">Daily Spread Trends</p>
+        <div className="line-charts-container" testid="lineChartsContainer">
+          {}
+        </div>
+      </div>
     )
   }
 
+  renderStateLoaderView = () => (
+    <div className="loading-container" testid="stateDetailsLoader">
+      <Loader type="TailSpin" color="#0467d4" height={70} width={70} />
+    </div>
+  )
+
+  renderStateViewContainer = () => {
+    const {apiStateStatus} = this.state
+    // console.log(apiStateStatus)
+    switch (apiStateStatus) {
+      case apiStateStatusConstants.success:
+        return this.renderStateSuccessView()
+      case apiStateStatusConstants.loading:
+        return this.renderStateLoaderView()
+      default:
+        return null
+    }
+  }
+
   render() {
-    console.log('In StateDetails render method')
+    // console.log('In StateDetails render method')
     return (
       <>
         <Header />
-        {this.renderStateDetailsView()}
+        {this.renderStateViewContainer()}
         <Footer />
       </>
     )

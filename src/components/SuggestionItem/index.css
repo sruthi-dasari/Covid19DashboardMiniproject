@@ -1,18 +1,21 @@
-/* .suggestionItemBtn {
-  background: transparent;
-} */
-
 .suggestion-item-container {
-  display: flex;
-  justify-content: space-between;
+  list-style: none;
   width: 300px;
   cursor: pointer;
-  align-items: center;
   border-bottom: 1px solid #747d80;
   background: transparent;
   border-top: none;
   border-left: none;
   border-right: none;
+}
+
+.suggestion-item-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  width: 100%;
+  border: none;
 }
 
 .link-item {

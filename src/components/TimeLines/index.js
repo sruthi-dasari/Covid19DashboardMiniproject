@@ -2,6 +2,8 @@ import './index.css'
 
 import {Component} from 'react'
 
+import Loader from 'react-loader-spinner'
+
 const apiTimelineStatusConstants = {
   timelineSuccess: 'TIMELINE_SUCCESS',
   timelineLoading: 'TIMELINE_IN_PROGRESS',
@@ -30,7 +32,7 @@ class Timelines extends Component {
     console.log(timelinesData)
     this.setState({
       timelinesData,
-      apiStatus: apiStatusConstants.timelineSuccess,
+      timelineStatus: apiTimelineStatusConstants.timelineSuccess,
     })
   }
 

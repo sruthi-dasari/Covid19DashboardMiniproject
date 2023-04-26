@@ -236,6 +236,7 @@ class StateDetails extends Component {
   }
 
   renderTimelinesView = () => {
+    console.log('In renderTimelinesView()')
     const {stateCode} = this.state
     return <TimeLines stateCode={stateCode} />
   }

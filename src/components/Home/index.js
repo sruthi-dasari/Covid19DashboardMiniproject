@@ -226,7 +226,7 @@ class Home extends Component {
     const response = await fetch(url, options)
 
     const data = await response.json()
-
+    // console.log(response)
     if (response.ok) {
       //   console.log(data)
 
@@ -310,7 +310,7 @@ class Home extends Component {
         <ul className="countrywide-cases-container">
           <div
             className="select-card confirmed-card"
-            testid="countryWideConfirmedCases"
+            // testid="countryWideConfirmedCases"
           >
             <p className="cases-text">Confirmed</p>
             <img
@@ -323,7 +323,7 @@ class Home extends Component {
 
           <li
             className="select-card active-card"
-            testid="countryWideActiveCases"
+            // testid="countryWideActiveCases"
           >
             <p className="cases-text">Active</p>
             <img
@@ -336,7 +336,7 @@ class Home extends Component {
 
           <li
             className="select-card recovered-card"
-            testid="countryWideRecoveredCases"
+            // testid="countryWideRecoveredCases"
           >
             <p className="cases-text">Recovered</p>
             <img
@@ -349,7 +349,7 @@ class Home extends Component {
 
           <li
             className="select-card deceased-card"
-            testid="countryWideDeceasedCases"
+            // testid="countryWideDeceasedCases"
           >
             <p className="cases-text">Deceased</p>
             <img
@@ -363,7 +363,7 @@ class Home extends Component {
 
         <div
           className="statewise-covid-data-table"
-          testid="stateWiseCovidDataTable"
+          //   testid="stateWiseCovidDataTable"
         >
           <div className="heading-row">
             <div className="states-heading-outer-container">
@@ -372,7 +372,7 @@ class Home extends Component {
                 <button
                   type="button"
                   className="asc-des-btn"
-                  testid="ascendingSort"
+                  //   testid="ascendingSort"
                   onClick={this.onClickAscButton}
                 >
                   <FcGenericSortingAsc className="asc-des-icon" />
@@ -381,7 +381,7 @@ class Home extends Component {
                 <button
                   type="button"
                   className="asc-des-btn"
-                  testid="descendingSort"
+                  //   testid="descendingSort"
                   onClick={this.onClickDescButton}
                 >
                   <FcGenericSortingDesc className="asc-des-icon" />
@@ -405,7 +405,10 @@ class Home extends Component {
   }
 
   renderLoadingView = () => (
-    <div className="loading-container" testid="homeRouteLoader">
+    <div
+      className="loading-container"
+      // testid="homeRouteLoader"
+    >
       <Loader type="TailSpin" color="#0467d4" height={70} width={70} />
     </div>
   )
@@ -473,7 +476,7 @@ class Home extends Component {
           {showSuggestions ? (
             <ul
               className="search-results-unordered-list"
-              testid="searchResultsUnorderedList"
+              //   testid="searchResultsUnorderedList"
             >
               {searchResults.map(eachSuggestion => (
                 <SuggestionItem
@@ -505,8 +508,8 @@ const ContentRow = props => {
     name,
     population,
     recovered,
-    stateCode,
-    tested,
+    // stateCode,
+    // tested,
   } = rowDetails
 
   return (

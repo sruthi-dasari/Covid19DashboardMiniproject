@@ -4,10 +4,13 @@ import {BiChevronRightSquare} from 'react-icons/bi'
 
 import {Link} from 'react-router-dom'
 
-import StateDetails from '../StateDetails'
+// import StateDetails from '../StateDetails'
 
 const SuggestionItem = props => {
-  const {suggestionDetails, covidData} = props
+  const {
+    suggestionDetails,
+    //  covidData
+  } = props
 
   const {name, stateCode} = suggestionDetails
 

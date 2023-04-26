@@ -1,8 +1,12 @@
 import './index.css'
 
+import {format} from 'date-fns'
+
 import {Component} from 'react'
 
-import {Loader} from 'react-loader-spinner'
+import TimeLines from '../Timelines'
+
+import Loader from 'react-loader-spinner'
 
 import Header from '../Header'
 import Footer from '../Footer'
@@ -155,9 +159,9 @@ const statesList = [
 ]
 
 const apiStateStatusConstants = {
-  success: 'SUCCESS',
-  loading: 'IN_PROGRESS',
-  initial: 'INITIAL',
+  stateSuccess: 'STATE_SUCCESS',
+  stateLoading: 'STATE_IN_PROGRESS',
+  stateInitial: 'STATE_INITIAL',
 }
 
 class StateDetails extends Component {
@@ -165,15 +169,16 @@ class StateDetails extends Component {
     data: [],
     stateData: [],
     countryWideData: [],
-    apiStateStatus: apiStateStatusConstants.success,
+    apiStateStatus: apiStateStatusConstants.stateInitial,
   }
 
   componentDidMount() {
+    console.log('In componentDidMount()')
     this.getCountryWideData()
-    this.getStateDetails()
   }
 
   convertObjectsDataIntoListItemsUsingForInMethod = () => {
+    console.log('In convertObjectsDataIntoListItemsUsingForInMethod()')
     const {data} = this.state
     const resultList = []
     // getting keys of an object object
@@ -194,7 +199,7 @@ class StateDetails extends Component {
         //   : 0
         const {meta} = data[keyName]
         const lastUpdated = meta.last_updated ? meta.last_updated : 0
-        const {districts} = data[keyName]
+        // const {districts} = data[keyName]
         // const districtKeyNames = Object.keys(districts)
         // districtKeyNames.forEach(districtKeyName => {
         //   if (districts[districtKeyName]) {
@@ -229,30 +234,16 @@ class StateDetails extends Component {
     return resultList
   }
 
-  getCountryWideData = async () => {
-    console.log('In getCountryWideData()')
-
-    const url = 'https://apis.ccbp.in/covid19-state-wise-data'
-    const options = {
-      method: 'GET',
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-    // console.log(data)
-    this.setState({data})
-
-    if (response.ok) {
-      const requiredCountryWideData = this.convertObjectsDataIntoListItemsUsingForInMethod()
-      console.log(requiredCountryWideData)
-      this.setState({countryWideData: requiredCountryWideData})
-    }
-  }
+  renderTimelinesView = () => <TimeLines />
 
   getStateDetails = () => {
     console.log('In getStateDetails()')
+    // this.setState({apiStateStatus: apiStateStatusConstants.stateLoading})
     const {match} = this.props
     const {params} = match
     const {stateCode} = params
+
+    // this.setState({stateCode})
 
     const {countryWideData} = this.state
 
@@ -262,32 +253,72 @@ class StateDetails extends Component {
 
     console.log(stateDetails)
 
-    this.setState({
-      stateData: stateDetails,
-      apiStateStatus: apiStateStatusConstants.success,
-    })
+    this.setState(
+      {
+        stateData: stateDetails,
+        apiStateStatus: apiStateStatusConstants.stateSuccess,
+      },
+      //   this.getTimelinesData,
+      this.renderTimelinesView,
+    )
+  }
+
+  getCountryWideData = async () => {
+    console.log('In getCountryWideData()')
+    this.setState({apiStateStatus: apiStateStatusConstants.stateLoading})
+    const url = 'https://apis.ccbp.in/covid19-state-wise-data'
+    const options = {
+      method: 'GET',
+    }
+    const response = await fetch(url, options)
+    const data = await response.json()
+    // console.log(response)
+    this.setState({data})
+
+    if (response.ok) {
+      const requiredCountryWideData = this.convertObjectsDataIntoListItemsUsingForInMethod()
+      console.log(requiredCountryWideData)
+      this.setState(
+        {countryWideData: requiredCountryWideData},
+        this.getStateDetails,
+      )
+    }
   }
 
   renderStateSuccessView = () => {
     console.log('In renderStateSuccessView()')
+    const {stateData} = this.state
+    const {
+      active,
+      confirmed,
+      deceased,
+      recovered,
+      lastUpdated,
+      name,
+      tested,
+    } = stateData
+
+    const modifiedLastUpdated = format(new Date(lastUpdated), 'PPP')
     return (
       <div className="state-success-view-container">
         <div className="state-name-and-tested-container">
           <div className="state-name-and-last-update-container">
             <div className="state-name-container">
-              <p className="state-name-text">Andhra Pradesh</p>
+              <p className="state-name-text">{name}</p>
             </div>
-            <p className="last-update-text">Last update on {}</p>
+            <p className="last-update-text">
+              Last update on {modifiedLastUpdated}
+            </p>
           </div>
           <div className="tested-container">
             <p className="tested-text">Tested</p>
-            <p className="tested-count-text">{}</p>
+            <p className="tested-count-text">{tested}</p>
           </div>
         </div>
         <ul className="state-specific-cases-container">
           <li
             className="select-card confirmed-card"
-            testid="stateSpecificConfirmedCasesContainer"
+            // testid="stateSpecificConfirmedCasesContainer"
           >
             <p className="cases-text">Confirmed</p>
             <img
@@ -295,12 +326,12 @@ class StateDetails extends Component {
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <p className="cases-count">000000</p>
+            <p className="cases-count">{confirmed}</p>
           </li>
 
           <li
             className="select-card active-card"
-            testid="stateSpecificActiveCasesContainer"
+            // testid="stateSpecificActiveCasesContainer"
           >
             <p className="cases-text">Active</p>
             <img
@@ -308,12 +339,12 @@ class StateDetails extends Component {
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <p className="cases-count">000000</p>
+            <p className="cases-count">{active}</p>
           </li>
 
           <li
             className="select-card recovered-card"
-            testid="stateSpecificRecoveredCasesContainer"
+            // testid="stateSpecificRecoveredCasesContainer"
           >
             <p className="cases-text">Recovered</p>
             <img
@@ -321,12 +352,12 @@ class StateDetails extends Component {
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <p className="cases-count">000000</p>
+            <p className="cases-count">{recovered}</p>
           </li>
 
           <li
             className="select-card deceased-card"
-            testid="stateSpecificDeceasedCasesContainer"
+            // testid="stateSpecificDeceasedCasesContainer"
           >
             <p className="cases-text">Deceased</p>
             <img
@@ -334,7 +365,7 @@ class StateDetails extends Component {
               alt="country wide confirmed cases pic"
               className="cases-icon"
             />
-            <p className="cases-count">000000</p>
+            <p className="cases-count">{deceased}</p>
           </li>
         </ul>
 
@@ -342,43 +373,49 @@ class StateDetails extends Component {
 
         <ul
           className="top-districts-outer-container"
-          testid="topDistrictsUnorderedList"
+          //   testid="topDistrictsUnorderedList"
         >
           <li className="district-container">
             <h1>{}</h1>
             <p>{}</p>
           </li>
         </ul>
-        <div className="bar-graph-container">{}</div>
-        <p className="daily-spread-heading">Daily Spread Trends</p>
-        <div className="line-charts-container" testid="lineChartsContainer">
-          {}
-        </div>
       </div>
     )
   }
 
-  renderStateLoaderView = () => (
-    <div className="loading-container" testid="stateDetailsLoader">
-      <Loader type="TailSpin" color="#0467d4" height={70} width={70} />
-    </div>
-  )
+  renderStateLoaderView = () => {
+    console.log('In renderStateLoaderView()')
+    return (
+      <div
+        className="state-details-loading-container"
+        // testid="stateDetailsLoader"
+      >
+        <Loader type="TailSpin" color="#0467d4" height={70} width={70} />
+      </div>
+    )
+  }
 
   renderStateViewContainer = () => {
+    console.log('In renderStateViewContainer()')
     const {apiStateStatus} = this.state
-    // console.log(apiStateStatus)
+    console.log(apiStateStatus)
     switch (apiStateStatus) {
-      case apiStateStatusConstants.success:
+      case apiStateStatusConstants.stateSuccess:
         return this.renderStateSuccessView()
-      case apiStateStatusConstants.loading:
+      case apiStateStatusConstants.stateLoading:
         return this.renderStateLoaderView()
+      //   case apiStatusConstants.timelineSuccess:
+      //     return this.renderTimelineSuccessView()
+      //   case apiStatusConstants.timelineLoading:
+      //     return this.renderTimelineLoaderView()
       default:
         return null
     }
   }
 
   render() {
-    // console.log('In StateDetails render method')
+    console.log('In StateDetails render method')
     return (
       <>
         <Header />

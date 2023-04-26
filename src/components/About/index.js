@@ -53,7 +53,10 @@ class About extends Component {
   renderSuccessView = () => {
     const {faqData} = this.state
     return (
-      <ul className="faqs-container" testid="faqsUnorderedList">
+      <ul
+        className="faqs-container"
+        //    testid="faqsUnorderedList"
+      >
         {faqData.map(eachItem => (
           <Faq faqDetails={eachItem} key={eachItem.qno} />
         ))}
@@ -62,7 +65,10 @@ class About extends Component {
   }
 
   renderLoadingView = () => (
-    <div className="loading-view-container" testid="aboutRouteLoader">
+    <div
+      className="loading-view-container"
+      //  testid="aboutRouteLoader"
+    >
       <Loader type="TailSpin" color="#356dcc" height={70} width={70} />
     </div>
   )

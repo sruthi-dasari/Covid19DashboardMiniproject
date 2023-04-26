@@ -64,3 +64,8 @@
   font-family: 'Roboto';
   text-align: center;
 }
+
+.state-details-loading-container {
+  background-color: #161625;
+  text-align: center;
+}

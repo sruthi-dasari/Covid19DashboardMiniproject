@@ -3,23 +3,27 @@ import './index.css'
 import {Component} from 'react'
 
 const apiTimelineStatusConstants = {
-
-    timelineSuccess: 'TIMELINE_SUCCESS',
-    timelineLoading: 'TIMELINE_IN_PROGRESS',
-    timelineInitial: 'TIMELINE_INITIAL',
+  timelineSuccess: 'TIMELINE_SUCCESS',
+  timelineLoading: 'TIMELINE_IN_PROGRESS',
+  timelineInitial: 'TIMELINE_INITIAL',
 }
 
 class Timelines extends Component {
-    state = {
-    timelineStatus: apiTimelineStatusConstants.initial,
-    stateCode: '',
+  state = {
+    timelineStatus: apiTimelineStatusConstants.timelineInitial,
     timelinesData: [],
-    }
+  }
 
-getTimelinesData = async () => {
+  componentDidMount() {
+    console.log('In timelines componentDidMount')
+    this.getTimelinesData()
+  }
+
+  getTimelinesData = async () => {
     console.log('In getTimelinesData()')
-    this.setState({apiStatus: apiStatusConstants.timelineLoading})
-    const {stateCode} = this.state
+    const {stateCode} = this.props
+    this.setState({timelineStatus: apiTimelineStatusConstants.timelineLoading})
+
     const timelinesUrl = `https://apis.ccbp.in/covid19-timelines-data/${stateCode}`
     const response = await fetch(timelinesUrl)
     const timelinesData = await response.json()
@@ -30,7 +34,7 @@ getTimelinesData = async () => {
     })
   }
 
-renderTimelineSuccessView = () => {
+  renderTimelineSuccessView = () => {
     console.log('In renderTimelineSuccessView()')
 
     return (
@@ -47,7 +51,7 @@ renderTimelineSuccessView = () => {
     )
   }
 
-renderTimelineLoaderView = () => {
+  renderTimelineLoaderView = () => {
     console.log('In renderTimelineLoaderView()')
     return (
       <div
@@ -59,28 +63,24 @@ renderTimelineLoaderView = () => {
     )
   }
 
-    renderTimelineViewContainer = () => {
-      console.log('In renderTimelineViewContainer()')
-      const {timelineStatus} = this.state
-      console.log(timelineStatus)
-      switch (timelineStatus) {
-        case apiTimelineStatusConstants.success:
-          return this.renderTimelineSuccessView()
-        case apiTimelineStatusConstants.loading:
-          return this.renderTimelineLoaderView()
-        default:
-          return null
-      }
+  renderTimelineViewContainer = () => {
+    console.log('In renderTimelineViewContainer()')
+    const {timelineStatus} = this.state
+    console.log(timelineStatus)
+    switch (timelineStatus) {
+      case apiTimelineStatusConstants.timelineSuccess:
+        return this.renderTimelineSuccessView()
+      case apiTimelineStatusConstants.timelineLoading:
+        return this.renderTimelineLoaderView()
+      default:
+        return null
     }
+  }
 
   render() {
-    console.log('In StateDetails render method')
-    return (
-      
-        {this.renderTimelineViewContainer()}
-       
-      
-    )
+    console.log('In Timelines render method')
+
+    return <>{this.renderTimelineViewContainer()}</>
   }
 }
 

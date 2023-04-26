@@ -4,9 +4,9 @@ import {format} from 'date-fns'
 
 import {Component} from 'react'
 
-import TimeLines from '../Timelines'
-
 import Loader from 'react-loader-spinner'
+
+import TimeLines from '../TimeLines'
 
 import Header from '../Header'
 import Footer from '../Footer'
@@ -170,6 +170,7 @@ class StateDetails extends Component {
     stateData: [],
     countryWideData: [],
     apiStateStatus: apiStateStatusConstants.stateInitial,
+    stateCode: '',
   }
 
   componentDidMount() {
@@ -234,7 +235,10 @@ class StateDetails extends Component {
     return resultList
   }
 
-  renderTimelinesView = () => <TimeLines />
+  renderTimelinesView = () => {
+    const {stateCode} = this.state
+    return <TimeLines stateCode={stateCode} />
+  }
 
   getStateDetails = () => {
     console.log('In getStateDetails()')
@@ -243,7 +247,7 @@ class StateDetails extends Component {
     const {params} = match
     const {stateCode} = params
 
-    // this.setState({stateCode})
+    this.setState({stateCode})
 
     const {countryWideData} = this.state
 
